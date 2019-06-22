@@ -23,6 +23,12 @@ export default {
       // eslint-disable-next-line no-param-reassign
       state.ads = payload;
     },
+    updateAd(state, { title, description, id }) {
+      const ad = state.ads.find(a => a.id === id);
+
+      ad.title = title;
+      ad.description = description;
+    },
   },
   actions: {
     async createAd({ commit, getters }, payload) {
@@ -69,7 +75,7 @@ export default {
           .forEach((key) => {
             const ad = ads[key];
             resultAds.push(
-              new Ad(ad.title, ad.description, ad.owberId, ad.promo, ad.src,  key),
+              new Ad(ad.title, ad.description, ad.owberId, ad.promo, ad.src, key),
             );
           });
         console.log(ads);
@@ -79,6 +85,24 @@ export default {
         commit('setError', error.message);
         commit('setLoading', false);
         console.log(error.message);
+        throw error;
+      }
+    },
+    async updateAd({ commit }, { title, description, id }) {
+      commit('clearError');
+      commit('setLoading', true);
+
+      try {
+        await fb.database().ref('ads').child(id).update({
+          title, description,
+        });
+        commit('updateAd', {
+          title, description, id,
+        });
+        commit('setLoading', false);
+      } catch (error) {
+        commit('setError', error.message);
+        commit('setLoading', false);
         throw error;
       }
     },
@@ -92,6 +116,9 @@ export default {
     },
     getAdById(state) {
       return adId => state.ads.find(ad => ad.id === adId);
+    },
+    myAds(state, getters) {
+      return state.ads.filter(ad => ad.ownerId === getters.getUser.id);
     },
   },
 };

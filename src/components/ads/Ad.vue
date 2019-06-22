@@ -13,8 +13,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn class="warning" flat>Edit</v-btn>
-            <v-btn class="success">Buy</v-btn>
+            <addEditAdModal :ad="ad"></addEditAdModal>
+              <v-btn class="success ml-2" >Buy</v-btn>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -23,6 +23,9 @@
 </template>
 
 <script>
+  // eslint-disable-next-line import/extensions
+import EditAdModal from './EditAdModal';
+
 export default {
   props: ['id'],
   computed: {
@@ -30,6 +33,12 @@ export default {
       const { id } = this;
       return this.$store.getters.getAdById(id);
     },
+    loading() {
+      return this.$store.getters.loading;
+    },
+  },
+  components: {
+    addEditAdModal: EditAdModal,
   },
 };
 </script>
