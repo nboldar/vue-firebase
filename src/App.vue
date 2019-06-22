@@ -40,7 +40,6 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-
     <v-toolbar app dark color="primary">
       <v-toolbar-side-icon @click="drawer=!drawer" class="hidden-md-and-up"></v-toolbar-side-icon>
       <v-toolbar-title>
@@ -49,9 +48,9 @@
       <v-spacer></v-spacer>
       <v-toolbar-items class="hidden-sm-and-down">
         <template v-for="(link,i) of links">
-          <v-divider :key="i" vertical></v-divider>
+          <v-divider  vertical></v-divider>
           <v-btn
-            :key="i"
+            :key="link.title"
             flat
             :to="link.url"
           >

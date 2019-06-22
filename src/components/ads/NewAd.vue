@@ -23,15 +23,25 @@
         </v-form>
         <v-layout row class="mb-3">
           <v-flex xs12>
-            <v-btn class="warning">
+            <v-btn
+              class="warning"
+              @click="triggerUpload"
+            >
               Upload
               <v-icon right dark>cloud_upload</v-icon>
             </v-btn>
+            <input
+              style="display: none"
+            ref="fileInput"
+            type="file"
+            accept="image/*"
+            @change="onFileChange"
+            >
           </v-flex>
         </v-layout>
         <v-layout row>
           <v-flex xs12>
-            <img src="" height="100">
+            <img :src="src" height="100" v-if="src" alt="image">
           </v-flex>
         </v-layout>
         <v-layout row>
@@ -48,7 +58,7 @@
             <v-spacer></v-spacer>
             <v-btn
               :loading="loading"
-              :disabled="!valid || loading"
+              :disabled="!valid || !img || loading"
               class="success"
               @click="createAd"
             >
@@ -69,6 +79,8 @@ export default {
       description: '',
       promo: false,
       valid: false,
+      src: '',
+      img: null,
     };
   },
   computed: {
@@ -77,13 +89,26 @@ export default {
     },
   },
   methods: {
+    triggerUpload() {
+      this.$refs.fileInput.click();
+    },
+    onFileChange(event) {
+      console.log(event.target);
+      const file = event.target.files[0];
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+      this.img = file;
+    },
     createAd() {
-      if (this.$refs.form.validate()) {
+      if (this.$refs.form.validate() && this.img) {
         const ad = {
           title: this.title,
           description: this.description,
           promo: this.promo,
-          src: 'https://cdn-images-1.medium.com/max/850/1*nq9cdMxtdhQ0ZGL8OuSCUQ.jpeg',
+          img: this.img,
         };
 
         this.$store.dispatch('createAd', ad)

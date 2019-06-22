@@ -75,6 +75,7 @@ export default {
       return this.$store.getters.loading;
     },
     ads() {
+      console.log(this.$store.getters.ads);
       return this.$store.getters.ads;
     },
     promoAds() {

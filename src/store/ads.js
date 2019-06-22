@@ -1,12 +1,12 @@
 import * as fb from 'firebase';
 
 class Ad {
-  constructor(title, description, ownerId, src = '', promo = false, id = null) {
+  constructor(title, description, ownerId, promo = false, src = '', id = null) {
     this.title = title;
     this.description = description;
     this.ownerId = ownerId;
-    this.src = src;
     this.promo = promo;
+    this.src = src;
     this.id = id;
   }
 }
@@ -30,21 +30,25 @@ export default {
       commit('setLoading', true);
 
       try {
+        const { img } = payload;
+        const fileData = await fb.storage()
+          .ref(`ads/${img.name}`)
+          .put(img);
+        const src = await fileData.ref.getDownloadURL();
+        console.log(src);
         const newAd = new Ad(
           payload.title,
           payload.description,
           getters.getUser.id,
-          payload.src,
           payload.promo,
+          src,
         );
-
-        const ad = await fb.database().ref('ads').push(newAd);
-
+        const ad = await fb.database()
+          .ref('ads')
+          .push(newAd);
+        newAd.id = ad.key;
         commit('setLoading', false);
-        commit('createAd', {
-          ...newAd,
-          id: ad.key,
-        });
+        commit('createAd', newAd);
       } catch (error) {
         commit('setError', error.message);
         commit('setLoading', false);
@@ -57,14 +61,17 @@ export default {
       commit('setLoading', true);
       const resultAds = [];
       try {
-        const fbVal = await fb.database().ref('ads').once('value');
+        const fbVal = await fb.database()
+          .ref('ads')
+          .once('value');
         const ads = fbVal.val();
-        Object.keys(ads).forEach((key) => {
-          const ad = ads[key];
-          resultAds.push(
-            new Ad(ad.title, ad.description, ad.owberId, ad.src, ad.promo, key),
-          );
-        });
+        Object.keys(ads)
+          .forEach((key) => {
+            const ad = ads[key];
+            resultAds.push(
+              new Ad(ad.title, ad.description, ad.owberId, ad.promo, ad.src,  key),
+            );
+          });
         console.log(ads);
         commit('setLoading', false);
         commit('loadAds', resultAds);
