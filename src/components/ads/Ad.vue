@@ -13,8 +13,8 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <addEditAdModal :ad="ad"></addEditAdModal>
-              <v-btn class="success ml-2" >Buy</v-btn>
+            <addEditAdModal :ad="ad" v-if="isOwner"/>
+            <app-buy-modal :ad="ad"></app-buy-modal>
           </v-card-actions>
         </v-card>
       </v-flex>
@@ -23,7 +23,7 @@
 </template>
 
 <script>
-  // eslint-disable-next-line import/extensions
+// eslint-disable-next-line import/extensions
 import EditAdModal from './EditAdModal';
 
 export default {
@@ -31,10 +31,14 @@ export default {
   computed: {
     ad() {
       const { id } = this;
+      console.log(this.$store.getters.getAdById(id));
       return this.$store.getters.getAdById(id);
     },
     loading() {
       return this.$store.getters.loading;
+    },
+    isOwner() {
+      return this.ad.ownerId === this.$store.getters.getUser.id;
     },
   },
   components: {

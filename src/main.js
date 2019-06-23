@@ -4,7 +4,9 @@ import * as fb from 'firebase';
 import App from './App.vue';
 import router from './router/router';
 import store from './store/store';
+import AppBuyModel from './components/shared/BuyModal.vue';
 
+Vue.component('app-buy-modal', AppBuyModel);
 Vue.config.productionTip = false;
 
 new Vue({

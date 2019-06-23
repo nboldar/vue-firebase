@@ -75,7 +75,7 @@ export default {
           .forEach((key) => {
             const ad = ads[key];
             resultAds.push(
-              new Ad(ad.title, ad.description, ad.owberId, ad.promo, ad.src, key),
+              new Ad(ad.title, ad.description, ad.ownerId, ad.promo, ad.src, key),
             );
           });
         console.log(ads);

@@ -41,7 +41,7 @@
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn flat color="orange" :to="'/ad/' + ad.id">Open</v-btn>
-              <v-btn raised color="primary">Buy</v-btn>
+              <app-buy-modal :ad="ad"></app-buy-modal>
             </v-card-actions>
           </v-card>
         </v-flex>
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+
 export default {
   name: 'Home',
   data() {
